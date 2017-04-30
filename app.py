@@ -4,23 +4,33 @@ import numpy as np
 from sklearn import preprocessing, model_selection, neighbors
 import pandas as pd 
 
-df = pd.read_csv('breast-cancer-wisconsin.data.txt')
-df.replace('?', -99999, inplace=True)
-df.drop(['id'],1,inplace=True)
+accuracies = []
 
-X = np.array(df.drop(['class'],1))
-y = np.array(df['class'])
+for i in range(25):
+	df = pd.read_csv('breast-cancer-wisconsin.data.txt')
+	df.replace('?', -99999, inplace=True)
+	df.drop(['id'],1,inplace=True)
 
-X_train, X_test, y_train, y_test = model_selection.train_test_split(X,y,test_size=0.2)
+	X = np.array(df.drop(['class'],1))
+	y = np.array(df['class'])
 
-clf = neighbors.KNeighborsClassifier()
-clf.fit(X_train, y_train)
+	X_train, X_test, y_train, y_test = model_selection.train_test_split(X,y,test_size=0.2)
 
-accuracy = clf.score(X_test, y_test)
-print(accuracy)
+	clf = neighbors.KNeighborsClassifier(n_jobs=1)
+	clf.fit(X_train, y_train)
 
-example_measures = np.array([4,2,1,1,1,2,3,2,1])
-example_measures = example_measures.reshape(1,-1)
+	accuracy = clf.score(X_test, y_test)
 
-prediction = clf.predict(example_measures)
-print(prediction)
+# print(accuracy)
+
+# #Example sample
+# example_measures = np.array([[4,2,1,1,1,2,3,2,1],[4,2,1,2,2,2,3,2,1]])
+# example_measures = example_measures.reshape(len(example_measures),-1)
+
+# prediction = clf.predict(example_measures)
+# print(prediction)
+
+	accuracies.append(accuracy)
+
+print(sum(accuracies)/len(accuracies))
+
